@@ -1,4 +1,4 @@
-//tinh tong cac uoc
+//tinh tong cac uoc .
 #include<stdio.h>
 
 int main(){

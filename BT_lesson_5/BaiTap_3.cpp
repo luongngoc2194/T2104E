@@ -1,4 +1,4 @@
-//Tim uoc chung lon nhat
+//Tim uoc chung lon nhat .
 #include<stdio.h>
 
 int main(){

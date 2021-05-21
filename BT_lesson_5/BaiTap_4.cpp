@@ -10,15 +10,13 @@ int main(){
 	printf("Nhap so tu 2 : ");
 	scanf("%d",&b);
 	
-	int boi=a*b;
-	
-	for(int i=1;i<=a && i<=b;i++){
-		
+	int uocln;
+	for(int i=1;i<=a&&i<=b;i++){
 		if(a%i==0 && b%i==0){
-			boi=boi/i;
-		
+			uocln=i;
 		}
+	
 	}
-	printf("Boi chung nho nhat cua %d va %d la : %d",a,b,boi);
+	printf("Boi chung nho nhat cua %d va %d la : %d",a,b,a*b/uocln);
 }
 

@@ -1,4 +1,4 @@
-//in so chan nho hon n
+//inso chan nho hon n
 #include<stdio.h>
 
 int main(){
