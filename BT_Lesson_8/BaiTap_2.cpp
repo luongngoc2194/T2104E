@@ -12,14 +12,18 @@ int main(){
 	while(i<n){
 		printf("Nha phan tu thu %d : ",i);
 		scanf("%d",&x);
-		for(int j=0;j<i;j++){
+		int nhapLai=0;
+		for(int j=0;j<i;j++){//duyet mang tu 0 den i-1 de kiem tra tim x trong mang
 			if(arr[j]==x){
-				printf("So vua nhap da co, nhap so khac :\n");				
+				printf("So vua nhap da co, nhap so khac :\n");
+				nhapLai=1;
 				break;
 			}			
 		}
-		arr[i]=x;
-		i++;															
+		if(nhapLai==0){
+				arr[i]=x;
+				i++;															
+		}
 	}
 	printf("\n-------------------------------\n");
 	printf("Day so vua nhap \n");
