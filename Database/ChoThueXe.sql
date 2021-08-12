@@ -65,11 +65,11 @@ INSERT INTO DongXe (DongXe, HangXe, SoChoNgoi)
 VALUES 
 	('Hiace', 'Toyota', 16),
 	('Vios', 'Toyota', 5),
-	('Escape', 'Toyota', 5),
-	('Cerato', 'Toyota', 7),
-	('Forte', 'Toyota', 5),
-	('Starex', 'Toyota', 7),
-	('Grand-i10', 'Toyota', 7);
+	('Escape', 'Ford', 5),
+	('Cerato', 'KIA', 7),
+	('Forte', 'KIA', 5),
+	('Starex', 'Huyndai', 7),
+	('Grand-i10', 'Huyndai', 7);
 
 INSERT INTO DangKyCungCap (MaDKCC, MaNhaCC, MaLoaiDV,DongXe,MaMP,NgayBDCC,NgayKTCC,SLXeDK)
 VALUES 
@@ -100,14 +100,96 @@ VALUES
 	('DK025', 'NCC003', 'DV03','Hiace',    'MP02','2016-08-24','2017-10-25',1);
 
 
+drop table DangKyCungCap;
+drop table NhaCungCap;
+drop table LoaiDichVu;
+drop table MucPhi;
+drop table DongXe;
+
+--sửa dữ liêu đã nhập
+
+update NhaCungCap set DiaChi = 'Ha Noi' where TenNhaCC like N'Cty TNHH Toàn Pháp';--với chuỗi thì dung like , số thì dùng =
+
+update NhaCungCap set DiaChi = 'Ha Noi' where TenNhaCC like N'Cty TNHH Toàn Pháp' or MaNhaCC like 'NCC002';--lọc các đối tượng thỏa mãn 1 trong
+update NhaCungCap set DiaChi = 'Ha Noi' where MaNhaCC in (NCC001 ,NCC002 ,NCC003);--lọc các đối tượng thỏa mãn 1 trong 
+
+update NhaCungCap set DiaChi = 'Ha Noi' where TenNhaCC like N'Cty TNHH%'; --lọc đối tượng có bắt đầu chuỗi Cty TNHH
+update NhaCungCap set DiaChi = 'Ha Noi' where TenNhaCC like N'%Toàn Pháp'; --lọc đối tượng có kết thúc chuỗi Toàn Pháp
+update NhaCungCap set DiaChi = 'Ha Noi' where TenNhaCC like N'%TNHH%'; --lọc đối tượng có chuỗi TNHH
+
+--Xóa dữ liêu
+
+delete from NhaCungCap where MaNhaCC in (NCC001 ,NCC002 ,NCC003);
+
+--Truy vấn dữ liêu mở rộng
+
+--Truy vấn thông thường
+SELECT MaNhaCC,DiaChi,TenNhaCC FROM NhaCungCap;
+SELECT MaNhaCC as newMaNhaCC,DiaChi,TenNhaCC FROM NhaCungCap;--hiện cột và đổi tên cột trên hiển thị / as
+
+
+--Truy vấn lọc dữ liệu
+SELECT * FROM NhaCungCap where MaNhaCC like N'NCC001              ';
+
+--Thông ke số lượng
+
+SELECT count(*) as SLDon FROM NhaCungCap where MaNhaCC like N'NCC001              ';--đếm số row
+SELECT sum(SLXeDK) as TongSoXe FROM DangKyCungCap;
+SELECT avg(SLXeDK) as TB_TongSoXe FROM DangKyCungCap;
+
+select MaNhaCC,sum(SLXeDK) as TongSoXe,count(*) as SLDon,avg(SLXeDK) as TB_TongSoXe FROM DangKyCungCap  group by MaNhaCC;
+select MaNhaCC,sum(SLXeDK) as TongSoXe,count(*) as SLDon,avg(SLXeDK) as TB_TongSoXe FROM DangKyCungCap where SLXeDK>10 group by MaNhaCC having MaNhaCC in ('NCC002              ','NCC003              ');
+
+--truy vấn con
+SELECT * FROM NhaCungCap where MaNhaCC in (select MaNhaCC FROM DangKyCungCap where SLXeDK =4 );
+
+
+--Săp xếp 
+select * from NhaCungCap order by MaSoThue asc;-- bé --> lớn ,abc ,cũ -->mơi
+select * from NhaCungCap order by MaSoThue desc;
+
+--Xem bảng
 SELECT * FROM NhaCungCap;
 SELECT * FROM LoaiDichVu;
 SELECT * FROM MucPhi;
 SELECT * FROM DongXe;
 SELECT * FROM DangKyCungCap;
 
-drop table DangKyCungCap;
-drop table NhaCungCap;
-drop table LoaiDichVu;
-drop table MucPhi;
-drop table DongXe;
+--Câu 3 :Liệt kê những dòng xe có số chỗ ngồi trên 5 chỗ.
+select * from DongXe where SoChoNgoi > 5;
+
+--Câu 4: Liệt kê thông tin của các nhà cung cấp đã từng đăng ký cung cấp những dòng xe
+--thuộc hãng xe “Toyota” với mức phí có đơn giá là 15.000 VNĐ/km hoặc những dòng xe thuộc hãng xe “KIA” với mức phí có đơn giá là 20.000 VNĐ/km
+
+
+select * from NhaCungCap 
+	where MaNhaCC in (select MaNhaCC from DangKyCungCap where DongXe in (select DongXe from DongXe where HangXe like 'KIA' ) 
+															and MaMP in (select MaMP from MucPhi where DonGia > 20.0000)) 
+	or MaNhaCC in (select MaNhaCC from DangKyCungCap where DongXe in (select DongXe from DongXe where HangXe like 'Toyota' ) 
+															and MaMP in (select MaMP from MucPhi where DonGia > 15.0000)) ;
+
+select * from NhaCungCap where MaNhaCC in 
+										(select MaNhaCC from DangKyCungCap where DongXe in 
+																							(select DongXe from DongXe where HangXe like 'KIA' ) 
+																				and MaMP in 
+																							(select MaMP from MucPhi where DonGia > 20.0000)
+										) 
+							or MaNhaCC in 
+										(select MaNhaCC from DangKyCungCap where DongXe in 
+																							(select DongXe from DongXe where HangXe like 'Toyota' ) 
+																				and MaMP in 
+																							(select MaMP from MucPhi where DonGia > 15.0000)
+										) ;
+
+--Câu 5: Liệt kê thông tin toàn bộ nhà cung cấp được sắp xếp tăng dần theo tên nhà cung cấp và giảm dần theo mã số thuế
+--Câu 6: Đếm số lần đăng ký cung cấp phương tiện tương ứng cho từng nhà cung cấp với
+--yêu cầu chỉ đếm cho những nhà cung cấp thực hiện đăng ký cung cấp có ngày bắt đầu cung cấp là “20/11/2015”
+
+
+
+--Xem bảng
+SELECT * FROM NhaCungCap;
+SELECT * FROM LoaiDichVu;
+SELECT * FROM MucPhi;
+SELECT * FROM DongXe;
+SELECT * FROM DangKyCungCap;
