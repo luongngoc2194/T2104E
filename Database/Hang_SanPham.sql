@@ -53,7 +53,8 @@ select count(*) from Hang;
 select count(*) from SanPham;
 
 --c) Tổng số loại sản phẩm của mỗi hãng có trong cửa hàng.
-select MaSoHang, sum(SoLuongSP) as SL_SP from SanPham group by MaSoHang;
+select A.TenHang,B.* from Hang A inner join 
+(select MaSoHang, sum(SoLuongSP) as SL_SP from SanPham group by MaSoHang) B on B.MaSoHang=A.MaSoHang;
 
 --d) Tổng số đầu sản phẩm của toàn cửa hàng
 select sum(SoLuongSP) as TongSP from SanPham;
@@ -64,3 +65,6 @@ select sum(SoLuongSP) as TongSP from SanPham;
 --c) Viết các câu lệnh để xác định các khóa ngoại và khóa chính của các bảng.
 drop table Hang;
 drop table SanPham;
+
+update Hang set SoDT = '09'+SoDT ; 
+select * from Hang;

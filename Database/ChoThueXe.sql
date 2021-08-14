@@ -185,6 +185,37 @@ select * from NhaCungCap where MaNhaCC in
 --Câu 6: Đếm số lần đăng ký cung cấp phương tiện tương ứng cho từng nhà cung cấp với
 --yêu cầu chỉ đếm cho những nhà cung cấp thực hiện đăng ký cung cấp có ngày bắt đầu cung cấp là “20/11/2015”
 
+--Nối Bảng :
+select * from NhaCungCap inner join DangKyCungCap on NhaCungCap.MaNhaCC = DangKyCungCap.MaNhaCC;
+select * from NhaCungCap left join DangKyCungCap on NhaCungCap.MaNhaCC = DangKyCungCap.MaNhaCC;
+select * from NhaCungCap right join DangKyCungCap on NhaCungCap.MaNhaCC = DangKyCungCap.MaNhaCC;
+
+select A.* ,B.* from NhaCungCap A inner join
+(select MaNhaCC,sum(SLXeDK) as TongSoXe,count(*) as SLDon,avg(SLXeDK) as TB_TongSoXe FROM DangKyCungCap  group by MaNhaCC) B on B.MaNhaCC = A.MaNhaCC ;
+
+--nối bảng rut gon
+--select * from (select * from A where active =1 ) C left join (select * from B where active =1 ) D on C.FK = D.Pk;
+
+--Sửa đổi bảng
+--Thêm côt
+alter table NhaCungCap add CotThem float;
+alter table NhaCungCap add CotThem float default 0;--Them sẵn giá trị mặc định
+
+--sửa kiểu cột
+alter table NhaCungCap alter column MaNhaCC int;
+alter table NhaCungCap add check (MaNhaCC>0);
+alter table MucPhi drop constraint CK__MucPhi__DonGia__671F4F74
+
+--xoa cột
+alter table NhaCungCap drop column MaNhaCC ;
+
+--Tang du lieu them 10
+update MucPhi set DonGia = DonGia +10; 
+
+--Đổi tên cột: Thêm cột mới -> coppy giá trị cột cũ -> Xóa cột cũ
+alter table NhaCungCap add CotThem float default 0;
+update NhaCungCap set CotThem = MaNhaCC; 
+alter table NhaCungCap drop column MaNhaCC ;
 
 
 --Xem bảng
@@ -193,3 +224,24 @@ SELECT * FROM LoaiDichVu;
 SELECT * FROM MucPhi;
 SELECT * FROM DongXe;
 SELECT * FROM DangKyCungCap;
+
+
+
+
+
+--PHẦN II
+create table ThuongHieu(
+	Id int primary key identity(1,1),
+	TenTH varchar(255) not null
+);
+create table SanPham(
+	Id int primary key identity(1,1),
+	TenSP varchar(255) not null,
+	Gia decimal(12,4) not null,
+	ThID int foreign key references ThuongHieu(Id)
+);
+insert into ThuongHieu values ('Toyota'),('Honda'),('Nisan');
+insert into SanPham (TenSP,Gia,ThID) values ('Camry',10000,1),('Innova',4000,1);
+insert into SanPham (TenSP,Gia,ThID) values ('Toyota'),('Honda'),('Nisan');
+insert into SanPham (TenSP,Gia,ThID) values ('Toyota'),('Honda'),('Nisan');
+ 
